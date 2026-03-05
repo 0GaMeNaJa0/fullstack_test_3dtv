@@ -1,0 +1,36 @@
+
+import localFont from 'next/font/local'
+import "./globals.css";
+
+// layout.tsx located at client/src/app/layout.tsx
+const giorgio = localFont({
+  src: [
+    { path: '../../public/fonts/GiorgioSans/GiorgioSans-Medium-Trial.otf', weight: '400', style: 'normal' },
+  ],
+  display: 'swap',
+  variable: '--font-giorgio'
+});
+
+const dbHeavent = localFont({
+  src: [
+    { path: '../../public/fonts/DBHeaventCond/DB-Heavent-Cond-v3.2.1.ttf', weight: '400', style: 'normal' },
+  ],
+  display: 'swap',
+  variable: '--font-dbheavent'
+});
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className={`${giorgio.className} ${dbHeavent.className}`}>
+      <body
+        className={`antialiased`}
+      >
+        {children}
+      </body>
+    </html>
+  );
+}
