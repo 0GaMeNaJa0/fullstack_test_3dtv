@@ -1,10 +1,17 @@
+"use client"
 import Image from "next/image";
+import Button from "./components/Button";
+import { redirect } from "next/navigation";
 
 
 export default function Home() {
-  return (
-    <div className="relative min-h-screen bg-[url(/images/p1/bg02_vertical_extended.png)] bg-cover bg-no-repeat bg-center max-w-[425px] mx-auto px-5 pt-10 pb-0">
 
+  const handlePrivacy = () => {
+    redirect("/privacy");
+  }
+  
+  return (
+    <div className="relative grow">
       <Image src="/images/p1/bubble_01.png" alt="bubble_01" width={154} height={160} className="absolute top-[600px] -left-[100px]" />
       <Image src="/images/p1/bubble_02.png" alt="bubble_02" width={78} height={80} className="absolute top-[286px] left-[26px]" />
       <Image src="/images/p1/bubble_03.png" alt="bubble_03" width={141} height={146} className="absolute top-[600px] left-[369px]"/>
@@ -21,7 +28,7 @@ export default function Home() {
         priority={false}
         className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-110 "
       />
-
+      <Button onClick={handlePrivacy} text={"REGISTER"}/>
     </div>
   );
 }
