@@ -1,7 +1,7 @@
 "use client"
+import Button from "@/app/components/Button"
 import Image from "next/image"
 import { redirect } from "next/navigation"
-import Button from "../components/Button"
 import { useState } from "react"
 
 const page = () => {

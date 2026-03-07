@@ -1,6 +1,12 @@
+"use client"
 import Image from 'next/image'
+import { redirect } from 'next/navigation'
 
 const page = () => {
+    
+    const redirectSelected = (param : string) => {
+        redirect("/form/" + param)
+    }
     return (
         <div className="relative grow flex flex-col items-center">
             <Image src="/images/p3/full_logo.png" alt="full_logo" width={250} height={249}  />
@@ -18,9 +24,9 @@ const page = () => {
                 </div>
             </div>
             <div className='grid grid-cols-2 justify-items-center gap-y-2'>
-                <Image src="/images/p3/winny_satang.png" alt="winny_satang" width={164} height={231}  />
-                <Image src="/images/p3/almond_progress.png" alt="almond_progress" width={199} height={231}  />
-                <Image src="/images/p3/daou.png" alt="daou" width={170} height={231} className='z-50 col-span-2'  />
+                <Image src="/images/p3/winny_satang.png" alt="winny_satang" width={164} height={231} onClick={() => redirectSelected("1")} />
+                <Image src="/images/p3/almond_progress.png" alt="almond_progress" width={199} height={231}  onClick={() => redirectSelected("2")}/>
+                <Image src="/images/p3/daou.png" alt="daou" width={170} height={231} className='z-50 col-span-2'  onClick={() => redirectSelected("3")}/>
             </div>
         </div>
     )

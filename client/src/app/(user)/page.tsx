@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image";
-import Button from "./components/Button";
+import Button from "../components/Button";
 import { redirect } from "next/navigation";
 
 
@@ -10,8 +10,8 @@ export default function Home() {
     redirect("/privacy");
   }
   
-  return (
-    <div className="relative grow">
+  return ( 
+    <div className="relative grow ">
       <Image src="/images/p1/bubble_01.png" alt="bubble_01" width={154} height={160} className="absolute top-[600px] -left-[100px]" />
       <Image src="/images/p1/bubble_02.png" alt="bubble_02" width={78} height={80} className="absolute top-[286px] left-[26px]" />
       <Image src="/images/p1/bubble_03.png" alt="bubble_03" width={141} height={146} className="absolute top-[600px] left-[369px]"/>
