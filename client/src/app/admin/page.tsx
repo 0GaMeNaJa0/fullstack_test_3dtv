@@ -1,9 +1,34 @@
 import Image from 'next/image'
-import React from 'react'
-
 const page = () => {
+
+  interface Data {
+    id: number,
+    firstName: string,
+    lastName: string,
+    email: string,
+    phone: string,
+    register: Date,
+    fanZone: string,
+    isFanZone: boolean,
+    isSendEmail: boolean,
+    timeStamp: Date
+  };
+  const data: Data[] = [
+    {
+      "id": 1,
+      "firstName": "พรชัย",
+      "lastName": "เพิ่มพูลกิจ",
+      "email": "herogane13748@gmail.com",
+      "phone": "091-868-5148",
+      "register": new Date(),
+      "fanZone": "Daou",
+      "isFanZone": true,
+      "isSendEmail": true,
+      "timeStamp": new Date(),
+    }
+  ]
   return (
-    <div className='space-y-5 bg-[#F9F3F3] text-lg'>
+    <div className='space-y-5 bg-[#F9F3F3] text-lg min-h-screen'>
       <div className='w-full bg-[#DF5761] flex justify-between items-center font-semibold text-white px-6'>
         <p className=' text-4xl'>ผู้ลงทะเบียน</p>
         <div className='flex justify-center items-center gap-x-2'>
@@ -79,6 +104,45 @@ const page = () => {
             <span>Export</span>
           </button>
         </div>
+      </div>
+
+      <div className='px-6 '>
+        <table className=" w-full text-left rounded-tl-xl rounded-tr-xl overflow-hidden">
+          <thead className="bg-[#DF5761] text-white">
+            <tr>
+              <th className='p-2'>#</th>
+              <th className='p-2'>First Name</th>
+              <th className='p-2'>Last Name</th>
+              <th className='p-2'>Email</th>
+              <th className='p-2'>Phone</th>
+              <th className='p-2'>Register</th>
+              <th className='p-2'>Fan Zone</th>
+              <th className='p-2'>สิทธิ์ Fan Zone</th>
+              <th className='p-2'>Send Email</th>
+              <th className='p-2'>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              data.map((d: Data) => {
+                return (
+                  <tr key={d.id}>
+                    <td className='p-2 truncate'>{d.id}</td>
+                    <td className='p-2 truncate'>{d.firstName}</td>
+                    <td className='p-2 truncate'>{d.lastName}</td>
+                    <td className='p-2 truncate'>{d.email}</td>
+                    <td className='p-2 truncate'>{d.phone}</td>
+                    <td className='p-2 truncate'>{d.register.toString()}</td>
+                    <td className='p-2 truncate'>{d.fanZone}</td>
+                    <td className='p-2 truncate'>{d.isFanZone ? 'Yes' : 'No'}</td>
+                    <td className='p-2 truncate'>{d.isSendEmail ? 'Yes' : 'No'}</td>
+                    <td className='p-2 truncate'>{d.timeStamp.toString()}</td>
+                  </tr>
+                );
+              })
+            }
+          </tbody>
+        </table>
       </div>
     </div>
   )
