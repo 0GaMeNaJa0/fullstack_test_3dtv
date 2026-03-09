@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${giorgio.className} ${dbHeavent.className}`}>
+    <html lang="en" className={`${dbHeavent.className} ${giorgio.variable}`}>
       <body
         className={`antialiased`}
       >

@@ -12,9 +12,9 @@ async function queryUsers() {
 
 async function insertUser(userData) {
 
-  const sql = `INSERT INTO Users (firstName, lastName, email, phone, registerDate, zoneId, isFanZone, isSendEmail, createdAt) VALUES (?, ?, ?, ?,?,?,?,?,?)`;
+  const sql = `INSERT INTO Users (firstName, lastName, email, phone, registerAt, zoneId, isFanZone, isSendEmail, createdAt) VALUES (?, ?, ?, ?,?,?,?,?,?)`;
 
-  const params = [userData.firstName, userData.lastName, userData.email, userData.phone, userData.registerDate, userData.zoneId, userData.isFanZone, userData.isSendEmail, userData.createdAt];
+  const params = [userData.firstName, userData.lastName, userData.email, userData.phone, userData.registerAt, userData.zoneId, userData.isFanZone, userData.isSendEmail, userData.createdAt];
 
   const [result] = await db.query(sql, params);
 
