@@ -89,7 +89,47 @@ const Page = () => {
         </div>
       </div>
 
-      {/* ... other UI blocks unchanged ... */}
+      <div className='px-6 flex justify-start gap-x-5 items-center'>
+        <div className='min-w-60'>
+          <label htmlFor="countries" className="block ">Fan Zone</label>
+          <select id="countries" className="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-gray-400 rounded-lg">
+            <option selected>ทั้งหมด</option>
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+            <option value="FR">France</option>
+            <option value="DE">Germany</option>
+          </select>
+        </div>
+        <div className='min-w-60'>
+          <label htmlFor="countries" className="block ">ช่วงเวลา</label>
+          <select id="countries" className="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-gray-400 rounded-lg">
+            <option selected>ทั้งหมด</option>
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+            <option value="FR">France</option>
+            <option value="DE">Germany</option>
+          </select>
+        </div>
+
+        <div className='w-full'>
+          <label htmlFor="countries" className="block ">Email</label>
+          <input type="text" className='border border-gray-400 rounded-lg px-3 py-2 w-full' placeholder='Email' />
+        </div>
+        <div className='w-full'>
+          <label htmlFor="countries" className="block ">ค้นหา</label>
+          <input type="text" className='border border-gray-400 rounded-lg px-3 py-2 w-full' placeholder='ค้นหา' />
+        </div>
+
+        <div className='flex flex-col justify-end '>
+          <label className="invisible">Export</label>
+          <button className='flex items-center justify-center gap-2 border border-gray-400 rounded-lg px-5 py-2.5 bg-[#D9D9D9]'>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 11V14H2V11H0V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V11H14ZM3 5L4.41 6.41L7 3.83V12H9V3.83L11.59 6.41L13 5L8 0L3 5Z" fill="#2B2B2B" />
+            </svg>
+            <span>Export</span>
+          </button>
+        </div>
+      </div>
 
       <div className="px-6 ">
         <table className="text-xl w-full text-left rounded-tl-xl rounded-tr-xl overflow-hidden">
