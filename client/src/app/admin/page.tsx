@@ -1,4 +1,5 @@
 "use client"
+import { ThaiDatePicker } from "thaidatepicker-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -15,14 +16,56 @@ interface User {
   createdAt: Date;
 }
 
+interface Filter {
+  zoneId?: number,
+  timeZone?: string,
+  email?: string,
+  keyword?: string
+}
+
+interface Zones {
+  zoneId: number,
+  name: string
+}
+
 const Page = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [filter, setFilters] = useState<Filter>({
+    // "timeZone" : `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`
+  });
+  const [zones, setZones] = useState<Zones[]>([]);
+  const filteredUsers = users.filter((u) => {
+    if (filter.zoneId && u.zoneName !== zones.find(z => z.zoneId === filter.zoneId)?.name) {
+      return false;
+    }
+    if (filter.timeZone) {
+      const registerDate = u.registerAt
+        ? `${u.registerAt.getFullYear()}-${String(u.registerAt.getMonth() + 1).padStart(2, "0")}-${String(u.registerAt.getDate()).padStart(2, "0")}`
+        : null;
+      if (registerDate !== filter.timeZone) return false;
+    }
+
+    if (filter.email && !u.email.toLowerCase().includes(filter.email.toLowerCase())) {
+      return false;
+    }
+
+    if (filter.keyword) {
+      const kw = filter.keyword.toLowerCase();
+      const match = [u.firstName, u.lastName, u.email, u.phone].some((field) =>
+        field?.toLowerCase().includes(kw)
+      );
+      if (!match) return false;
+    }
+
+    return true;
+  });
   useEffect(() => {
     const fetchData = async () => {
       try {
+
         const res = await fetch(
-          "http://localhost:" + process.env.NEXT_PUBLIC_SERVER_PORT + "/users"
-        );
+          `http://localhost:${process.env.NEXT_PUBLIC_SERVER_PORT}/users`
+        )
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const result = await res.json();
@@ -47,7 +90,23 @@ const Page = () => {
       }
     };
 
+    const fetchZones = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:" + process.env.NEXT_PUBLIC_SERVER_PORT + "/master/zones"
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const zones = await res.json();
+
+        setZones(zones)
+      } catch (err) {
+        console.error("Failed to fetch zones:", err);
+        setUsers([]);
+      }
+    }
     fetchData();
+    fetchZones();
   }, []);
 
   const renderDateTime = (date: Date | null) => {
@@ -91,33 +150,58 @@ const Page = () => {
 
       <div className='px-6 flex justify-start gap-x-5 items-center'>
         <div className='min-w-60'>
-          <label htmlFor="countries" className="block ">Fan Zone</label>
-          <select id="countries" className="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-gray-400 rounded-lg">
-            <option selected>ทั้งหมด</option>
-            <option value="US">United States</option>
-            <option value="CA">Canada</option>
-            <option value="FR">France</option>
-            <option value="DE">Germany</option>
+          <label className="block ">Fan Zone</label>
+          <select
+            id="countries"
+            className="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-gray-400 rounded-lg"
+            value={filter.zoneId ?? ""}
+            onChange={(e) => {
+              const v = e.target.value
+              setFilters(prev => ({
+                ...prev,
+                zoneId: v === "" ? undefined : Number(v)
+              }))
+            }}
+          >
+            <option value="">ทั้งหมด</option>
+            {zones.map((z) => (
+              <option key={z.zoneId} value={z.zoneId}>{z.name}</option>
+            ))}
           </select>
         </div>
         <div className='min-w-60'>
           <label htmlFor="countries" className="block ">ช่วงเวลา</label>
-          <select id="countries" className="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-gray-400 rounded-lg">
-            <option selected>ทั้งหมด</option>
-            <option value="US">United States</option>
-            <option value="CA">Canada</option>
-            <option value="FR">France</option>
-            <option value="DE">Germany</option>
-          </select>
+          <div className="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-gray-400 rounded-lg">
+            <ThaiDatePicker value={filter?.timeZone}
+              placeholder="กรุณาเลือกวันที่"
+              onChange={(date: string) => {
+                setFilters((prev) => ({
+                  ...prev,
+                  timeZone: date
+                }))
+              }} />
+          </div>
         </div>
 
         <div className='w-full'>
-          <label htmlFor="countries" className="block ">Email</label>
-          <input type="text" className='border border-gray-400 rounded-lg px-3 py-2 w-full' placeholder='Email' />
+          <label className="block ">Email</label>
+          <input type="text" className='border border-gray-400 rounded-lg px-3 py-2 w-full' placeholder='Email' value={filter.email ?? ""}
+            onChange={(e) =>
+              setFilters((prev) => ({
+                ...prev,
+                email: e.target.value
+              }))
+            } />
         </div>
         <div className='w-full'>
-          <label htmlFor="countries" className="block ">ค้นหา</label>
-          <input type="text" className='border border-gray-400 rounded-lg px-3 py-2 w-full' placeholder='ค้นหา' />
+          <label className="block ">ค้นหา</label>
+          <input type="text" className='border border-gray-400 rounded-lg px-3 py-2 w-full' placeholder='ค้นหา' value={filter.keyword ?? ""}
+            onChange={(e) =>
+              setFilters((prev) => ({
+                ...prev,
+                keyword: e.target.value
+              }))
+            } />
         </div>
 
         <div className='flex flex-col justify-end '>
@@ -148,7 +232,7 @@ const Page = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((u,idx) => (
+            {filteredUsers.map((u, idx) => (
               <tr key={u.userId}>
                 <td className="p-2 truncate">{idx + 1}</td>
                 <td className="p-2 truncate">{u.firstName}</td>

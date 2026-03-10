@@ -1,6 +1,7 @@
 const db = require('../../config/db');
 
 async function queryUsers() {
+  
   const sql =
     "SELECT u.*,z.name as 'zoneName' " +
     "FROM Users u " +
