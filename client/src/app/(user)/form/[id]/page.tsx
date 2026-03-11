@@ -12,7 +12,6 @@ interface FormData {
   registerAt: string;
   zoneId: number;
   isFanZone: boolean;
-  isSendEmail: boolean;
   createdAt: string;
   isAccepted: boolean; 
 }
@@ -24,10 +23,9 @@ const Page = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       zoneId: Number(params?.id ?? 0),
-      registerAt: new Date().toISOString().slice(0, 19).replace("T", " "),
-      createdAt: new Date().toISOString().slice(0, 19).replace("T", " "),
+      registerAt: new Date().toLocaleString("sv-SE", {timeZone: "Asia/Bangkok",}).replace("T", " "),
+      createdAt: new Date().toLocaleString("sv-SE", {timeZone: "Asia/Bangkok",}).replace("T", " "),
       isFanZone: false,
-      isSendEmail: false,
       isAccepted: false
     }
   });

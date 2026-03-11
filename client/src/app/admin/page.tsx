@@ -2,6 +2,7 @@
 import { ThaiDatePicker } from "thaidatepicker-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Modal from "../components/Modal";
 
 interface User {
   userId: number;
@@ -12,7 +13,6 @@ interface User {
   registerAt: Date;
   zoneName: string;
   isFanZone: boolean;
-  isSendEmail: boolean;
   createdAt: Date;
 }
 
@@ -30,10 +30,10 @@ interface Zones {
 
 const Page = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [filter, setFilters] = useState<Filter>({
-    // "timeZone" : `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`
-  });
+  const [filter, setFilters] = useState<Filter>({});
   const [zones, setZones] = useState<Zones[]>([]);
+  const [modal, setModal] = useState<number | null>(null);
+  const [isUpdate, setIsUpdate] = useState(false);
   const filteredUsers = users.filter((u) => {
     if (filter.zoneId && u.zoneName !== zones.find(z => z.zoneId === filter.zoneId)?.name) {
       return false;
@@ -59,6 +59,31 @@ const Page = () => {
 
     return true;
   });
+  const handleSendEmail = async () => {
+
+    const port = process.env.NEXT_PUBLIC_SERVER_PORT ?? '3000';
+    const url = `http://localhost:${port}/users/fanZone`;
+
+    try {
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          "userId" : modal
+        })
+      });
+      console.log(res);
+      if (res.ok && res.status === 200) {
+        setModal(null);
+        setIsUpdate(!isUpdate);
+      } else {
+        console.error('request failed', await res.text());
+      }
+    } catch (err) {
+      console.error('network or other error', err);
+    }
+
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -79,7 +104,6 @@ const Page = () => {
           registerAt: r.registerAt ? new Date(r.registerAt) : null,
           zoneName: r.zoneName,
           isFanZone: Boolean(r.isFanZone),
-          isSendEmail: Boolean(r.isSendEmail),
           createdAt: r.createdAt ? new Date(r.createdAt) : null,
         }));
 
@@ -107,7 +131,7 @@ const Page = () => {
     }
     fetchData();
     fetchZones();
-  }, []);
+  }, [isUpdate]);
 
   const renderDateTime = (date: Date | null) => {
     if (!date) return "-";
@@ -225,9 +249,8 @@ const Page = () => {
               <th className="p-2">Email</th>
               <th className="p-2">Phone</th>
               <th className="p-2">Register</th>
-              <th className="p-2">Fan Zone</th>
-              <th className="p-2">สิทธิ์ Fan Zone</th>
-              <th className="p-2">Send Email</th>
+              <th className="p-2 text-center">สิทธิ์ Fan Zone</th>
+              <th className="p-2 text-center">Send Email</th>
               <th className="p-2">Timestamp</th>
             </tr>
           </thead>
@@ -240,15 +263,28 @@ const Page = () => {
                 <td className="p-2 truncate">{u.email}</td>
                 <td className="p-2 truncate">{renderPhone(u.phone)}</td>
                 <td className="p-2 truncate">{renderDateTime(u.registerAt)}</td>
-                <td className="p-2 truncate">{u.zoneName}</td>
-                <td className="p-2 truncate">{u.isFanZone ? "Yes" : "No"}</td>
-                <td className="p-2 truncate">{u.isSendEmail ? "Yes" : "No"}</td>
+
+                <td className="p-2 truncate text-center">
+                  <div className={`${u.isFanZone ? 'bg-[#008C4F]' : 'bg-[#6E6E6E]'} inline-block w-5 h-5 rounded-sm`} />
+                </td>
+                <td className="p-2 truncate">
+                  <div className="flex items-center justify-center">
+                    <button
+                      onClick={() => setModal(u.userId)}
+                      className={`${u.isFanZone ? 'bg-[#6E6E6E]' : 'bg-[#008C4F]'} text-white rounded-md px-3 py-1 inline-flex items-center justify-center`}
+                    >
+                      ส่งอีเมล
+                    </button>
+                  </div>
+                </td>
+
                 <td className="p-2 truncate">{renderDateTime(u.createdAt)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      <Modal onClose={() => setModal(null)} onSend={handleSendEmail} modalStatus={modal}/>
     </div>
   );
 };
