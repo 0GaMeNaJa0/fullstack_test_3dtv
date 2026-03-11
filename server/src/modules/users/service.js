@@ -8,11 +8,8 @@ async function createUser(data) {
   return await repository.insertUser(data);
 }
 
-async function toggleFanZone(userId) {
+async function allowFanZone(userId) {
   return await repository.updateFanZone(userId);
 }
-async function toggleSendEmail(userId) {
-  return await repository.updateEmail(userId);
-}
 
-module.exports = { getUsers,createUser,toggleFanZone,toggleSendEmail };
+module.exports = { getUsers,createUser,allowFanZone };

@@ -13,9 +13,9 @@ async function queryUsers() {
 
 async function insertUser(userData) {
 
-  const sql = `INSERT INTO Users (firstName, lastName, email, phone, registerAt, zoneId, isFanZone, isSendEmail, createdAt) VALUES (?, ?, ?, ?,?,?,?,?,?)`;
+  const sql = `INSERT INTO Users (firstName, lastName, email, phone, registerAt, zoneId, isFanZone, createdAt) VALUES (?, ?, ?, ?,?,?,?,?)`;
 
-  const params = [userData.firstName, userData.lastName, userData.email, userData.phone, userData.registerAt, userData.zoneId, userData.isFanZone, userData.isSendEmail, userData.createdAt];
+  const params = [userData.firstName, userData.lastName, userData.email, userData.phone, userData.registerAt, userData.zoneId, userData.isFanZone,  userData.createdAt];
 
   const [result] = await db.query(sql, params);
 
@@ -26,7 +26,7 @@ async function insertUser(userData) {
 }
 
 async function updateFanZone(userId){
-  const sql = `UPDATE Users u SET u.isFanzone = NOT u.isFanZone WHERE u.userId = ?`;
+  const sql = `UPDATE Users u SET u.isFanzone = 1 WHERE u.userId = ?`;
 
   const params = [userId]
 
@@ -37,18 +37,4 @@ async function updateFanZone(userId){
     changedRows: result.changedRows
   };
 }
-
-async function updateEmail(userId){
-  const sql = `UPDATE Users u SET u.isSendEmail = NOT u.isSendEmail WHERE u.userId = ?`;
-
-  const params = [userId]
-
-  const [result] = await db.query(sql, params);
-
-  return {
-    affectedRows: result.affectedRows,
-    changedRows: result.changedRows
-  };
-}
-
-module.exports = { queryUsers,insertUser,updateEmail,updateFanZone };
+module.exports = { queryUsers,insertUser,updateFanZone };
