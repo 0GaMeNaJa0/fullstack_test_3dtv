@@ -66,7 +66,7 @@ const Page = () => {
   });
   const handleSendEmail = async () => {
     try {
-      const res = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_SERVER_PORT}/users/sendEmail`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}${process.env.NEXT_PUBLIC_SERVER_PORT}/users/sendEmail`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -91,7 +91,7 @@ const Page = () => {
       try {
 
         const res = await fetch(
-          `http://localhost:${process.env.NEXT_PUBLIC_SERVER_PORT}/users`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}${process.env.NEXT_PUBLIC_SERVER_PORT}/users`
         )
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
@@ -119,7 +119,7 @@ const Page = () => {
     const fetchZones = async () => {
       try {
         const res = await fetch(
-          "http://localhost:" + process.env.NEXT_PUBLIC_SERVER_PORT + "/master/zones"
+           `${process.env.NEXT_PUBLIC_SERVER_URL}${process.env.NEXT_PUBLIC_SERVER_PORT}/master/zones`
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
