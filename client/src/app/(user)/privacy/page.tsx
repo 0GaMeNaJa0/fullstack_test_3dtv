@@ -18,7 +18,7 @@ const page = () => {
         
     }
     return (
-        <div className="relative flex grow items-center flex-col space-y-9 text-lg/4">
+        <div className="relative flex grow items-center flex-col space-y-9 text-lg/4 max-xs:text-base/4">
             <Image src="/images/regis_logo.png" alt="regis_logo" width={211} height={31} />
             <Image src="/images/p2/privacy.png" alt="regis_logo" width={353} height={507} />
             <div className="text-black max-w-[290px] absolute top-35 font-medium">
@@ -45,7 +45,7 @@ const page = () => {
                     <input type="checkbox" checked={checked} id="checkbox" className="h-10 w-10 accent-[#DD7B7E]" onChange={() => setCheck(!checked)} />
                     <p className="text-[#E05862]">ข้าพเจ้าตกลงและยินยอมตามข้อกำหนด <br />และเงื่อนไขของกิจกรรมนี้</p>
                 </div>
-                <p className={`${pass ? 'hidden' : 'block'} text-red-500 mt-2`}>กรุณาตกลงและยินยอมตามข้อกำหนดและเงื่อนไขของกิจกรรมนี้</p>
+                <p className={`${pass ? 'hidden' : 'block'} text-red-500 mt-2 text-center`}>กรุณาตกลงและยินยอมตามข้อกำหนดและเงื่อนไขของกิจกรรมนี้</p>
             </div>
 
             <Button onClick={validateCheck} text="ACCEPT" />

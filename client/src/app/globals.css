@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
-
+@theme{
+  --breakpoint-xs: 23rem;
+}
 @theme inline {
   --font-giorgio: var(--font-giorgio);
   --font-dbheavent: var(--font-dbheavent);

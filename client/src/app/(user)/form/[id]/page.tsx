@@ -66,11 +66,11 @@ const Page = () => {
   };
 
   return (
-    <div className="relative flex grow items-center flex-col space-y-6 text-lg/4">
+    <div className="relative flex grow items-center flex-col space-y-6 text-lg/4 max-xs:text-base/4">
       <Image src="/images/regis_logo.png" alt="regis_logo" width={211} height={31} />
       <form className='w-full space-y-3 px-4' onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <p className='text-3xl font-bold'>FIRST NAME*(ENGLISH)</p>
+          <p className='text-3xl max-xs:text-xl font-bold'>FIRST NAME*(ENGLISH)</p>
           <input
             type="text"
             className='border-[#DF5761] border-2 px-4 py-2 w-full rounded-2xl bg-white'
@@ -81,7 +81,7 @@ const Page = () => {
         </div>
 
         <div>
-          <p className='text-3xl font-bold'>LAST NAME*(ENGLISH)</p>
+          <p className='text-3xl max-xs:text-xl font-bold'>LAST NAME*(ENGLISH)</p>
           <input
             type="text"
             className='border-[#DF5761] border-2 px-4 py-2 w-full rounded-2xl bg-white'
@@ -92,7 +92,7 @@ const Page = () => {
         </div>
 
         <div>
-          <p className='text-3xl font-bold'>EMAIL ADDRESS*</p>
+          <p className='text-3xl max-xs:text-xl font-bold'>EMAIL ADDRESS*</p>
           <input
             type="email"
             className='border-[#DF5761] border-2 px-4 py-2 w-full rounded-2xl bg-white'
@@ -109,7 +109,7 @@ const Page = () => {
         </div>
 
         <div>
-          <p className='text-3xl font-bold'>PHONE NUMBER*</p>
+          <p className='text-3xl max-xs:text-xl font-bold'>PHONE NUMBER*</p>
           <input
             type="text"
             inputMode="numeric"
