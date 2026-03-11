@@ -39,6 +39,7 @@ const Page = () => {
   const [zones, setZones] = useState<Zones[]>([]);
   const [modalData, setModalData] = useState<ModalData | null>(null);
   const [isUpdate, setIsUpdate] = useState(false);
+
   const filteredUsers = users.filter((u) => {
     if (filter.zoneId && u.zoneName !== zones.find(z => z.zoneId === filter.zoneId)?.name) {
       return false;
@@ -64,6 +65,8 @@ const Page = () => {
 
     return true;
   });
+
+  const fanZoneUsers = filteredUsers.filter(u => u.isFanZone === true).length;
   const handleSendEmail = async () => {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/sendEmail`, {
@@ -171,6 +174,30 @@ const Page = () => {
           <svg width="9" height="5" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4.40375 4.40375L0 0H8.8075L4.40375 4.40375Z" fill="white" />
           </svg>
+        </div>
+      </div>
+
+      <div className='text-2xl px-6 flex justify-start items-center gap-x-10'>
+        <div className='flex justify-between items-center w-72 px-4 py-3 bg-white rounded-2xl'>
+          <div>
+            <p className='text-4xl font-bold mb-3'>{filteredUsers.length}</p>
+            <p>ผู้ลงทะเบียนทั้งหมด</p>
+          </div>
+          <span>คน</span>
+        </div>
+        <div className='flex justify-between items-center w-72 px-4 py-3 bg-white rounded-2xl'>
+          <div>
+            <p className='text-4xl font-bold mb-3'>{fanZoneUsers + " / " + filteredUsers.length} </p>
+            <p>สิทธิ์ Fan zone ทั้งหมด</p>
+          </div>
+          <span>คน</span>
+        </div>
+        <div className='flex justify-between items-center w-72 px-4 py-3 bg-white rounded-2xl'>
+          <div>
+            <p className='text-4xl font-bold mb-3'>{fanZoneUsers + " / " + filteredUsers.length}</p>
+            <p>การส่งอีเมล</p>
+          </div>
+          <span>คน</span>
         </div>
       </div>
 
