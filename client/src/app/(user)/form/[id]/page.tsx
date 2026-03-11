@@ -35,7 +35,7 @@ const Page = () => {
 
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}${process.env.NEXT_PUBLIC_SERVER_PORT}/users`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -43,7 +43,7 @@ const Page = () => {
 
       if (res.ok && res.status === 201) {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}${process.env.NEXT_PUBLIC_SERVER_PORT}/users/sendEmail`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/sendEmail`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
