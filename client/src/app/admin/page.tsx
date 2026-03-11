@@ -28,9 +28,9 @@ interface Zones {
   name: string
 }
 
-export interface ModalData{
-  userId : number,
-  email : string
+export interface ModalData {
+  userId: number,
+  email: string
 }
 
 const Page = () => {
@@ -73,8 +73,8 @@ const Page = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          "userId" : modalData?.userId,
-          "email" : modalData?.email
+          "userId": modalData?.userId,
+          "email": modalData?.email
         })
       });
       console.log(res);
@@ -122,7 +122,7 @@ const Page = () => {
     const fetchZones = async () => {
       try {
         const res = await fetch(
-           `${process.env.NEXT_PUBLIC_SERVER_URL}/master/zones`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/master/zones`
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
@@ -155,7 +155,24 @@ const Page = () => {
 
     return `${datePart} | ${timePart}`;
   };
+  const exportExcel = async () => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/exportExcel`);
 
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error('Export failed: ' + text);
+    }
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'report.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  };
   const renderPhone = (phone: string) => phone.substring(0, 3) + "-" + phone.substring(3, 6) + "-" + phone.substring(6);
 
   return (
@@ -259,7 +276,7 @@ const Page = () => {
 
         <div className='flex flex-col justify-end '>
           <label className="invisible">Export</label>
-          <button className='flex items-center justify-center gap-2 border border-gray-400 rounded-lg px-5 py-2.5 bg-[#D9D9D9]'>
+          <button onClick={exportExcel} className='cursor-pointer flex items-center justify-center gap-2 border border-gray-400 rounded-lg px-5 py-2.5 bg-[#D9D9D9]'>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M14 11V14H2V11H0V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V11H14ZM3 5L4.41 6.41L7 3.83V12H9V3.83L11.59 6.41L13 5L8 0L3 5Z" fill="#2B2B2B" />
             </svg>
@@ -299,7 +316,7 @@ const Page = () => {
                 <td className="p-2 truncate">
                   <div className="flex items-center justify-center">
                     <button
-                      onClick={() => setModalData({"userId" : u.userId, "email" : u.email})}
+                      onClick={() => setModalData({ "userId": u.userId, "email": u.email })}
                       className={`${u.isFanZone ? 'bg-[#6E6E6E]' : 'bg-[#008C4F]'} text-white rounded-md px-3 py-1 inline-flex items-center justify-center`}
                     >
                       ส่งอีเมล
@@ -313,7 +330,7 @@ const Page = () => {
           </tbody>
         </table>
       </div>
-      <Modal onClose={() => setModalData(null)} onSend={handleSendEmail} modalStatus={modalData}/>
+      <Modal onClose={() => setModalData(null)} onSend={handleSendEmail} modalStatus={modalData} />
     </div>
   );
 };

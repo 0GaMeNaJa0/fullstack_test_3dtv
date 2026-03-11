@@ -149,39 +149,43 @@ async function allowFanZone(userId) {
 }
 
 async function exportExcel(req, res, next) {
-  const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet('Report');
+  try {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Report');
 
-  sheet.columns = [
-    { header: '#', key: 'userId', width: 6 },
-    { header: 'First Name', key: 'firstName', width: 20 },
-    { header: 'Last Name', key: 'lastName', width: 20 },
-    { header: 'Email', key: 'email', width: 30 },
-    { header: 'Phone', key: 'phone', width: 18 },
-    { header: 'Register', key: 'registerAt', width: 15 },
-    { header: 'Fan Zone', key: 'zoneName', width: 15 },
-    { header: 'สิทธิ์ Fan Zone', key: 'isFanZone', width: 18 },
-    { header: 'Timestamp', key: 'createdAt', width: 25 }
-  ];
+    sheet.columns = [
+      { header: '#', key: 'userId', width: 6 },
+      { header: 'First Name', key: 'firstName', width: 20 },
+      { header: 'Last Name', key: 'lastName', width: 20 },
+      { header: 'Email', key: 'email', width: 30 },
+      { header: 'Phone', key: 'phone', width: 18 },
+      { header: 'Register', key: 'registerAt', width: 15 },
+      { header: 'Fan Zone', key: 'zoneName', width: 15 },
+      { header: 'สิทธิ์ Fan Zone', key: 'isFanZone', width: 18 },
+      { header: 'Timestamp', key: 'createdAt', width: 25 }
+    ];
 
-  const users = await service.getUsers();
+    const users = await service.getUsers();
 
-  users.forEach(row => {
-    row.isFanZone = row.isFanZone ? "ได้รับสิทธิ์" : "ไม่ได้รับสิทธิ์"
-    sheet.addRow(row)
-  });
+    users.forEach(row => {
+      row.isFanZone = row.isFanZone ? "ได้รับสิทธิ์" : "ไม่ได้รับสิทธิ์"
+      sheet.addRow(row)
+    });
 
-  sheet.getRow(1).font = { bold: true };
-  sheet.getColumn(6).alignment = { horizontal: 'left' };
-  sheet.getColumn(9).alignment = { horizontal: 'left' };
+    sheet.getRow(1).font = { bold: true };
+    sheet.getColumn(6).alignment = { horizontal: 'left' };
+    sheet.getColumn(9).alignment = { horizontal: 'left' };
 
-  res.setHeader('Content-Type',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-  res.setHeader('Content-Disposition', 'attachment; filename="report.xlsx"');
+    res.setHeader('Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename="report.xlsx"');
 
-  await workbook.xlsx.write(res);
+    await workbook.xlsx.write(res);
 
-  res.end();
+    res.end();
+  } catch (err) {
+    return res.status(500).message("Have a trouble to export");
+  }
 }
 
 module.exports = {
