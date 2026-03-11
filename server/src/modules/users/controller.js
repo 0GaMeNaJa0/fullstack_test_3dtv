@@ -1,5 +1,6 @@
 const service = require('./service');
 const nodemailer = require('nodemailer');
+const ExcelJS = require('exceljs');
 
 async function getUsers(req, res, next) {
   try {
@@ -96,7 +97,7 @@ async function sendEmail(req, res, next) {
     const mailOptions = {
       from: `"no-reply@MAYBELLINENEWYORK.com" <${process.env.SMTP_USER}>`,
       to: email,
-      subject:`MAYBELLINE NEWYORK : BOBA BOOST SQUARE - ${!userId ? 'ลงทะเบียนสำเร็จ' : 'ขอแสดงความยินดี'}`,
+      subject: `MAYBELLINE NEWYORK : BOBA BOOST SQUARE - ${!userId ? 'ลงทะเบียนสำเร็จ' : 'ขอแสดงความยินดี'}`,
       text: `${!userId ? 'คุณได้ลงทะเบียนเข้าร่วมกิจกรรม' : 'คุณได้รับสิทธิ์ Fan Zone'} MAYBELLINE NEWYORK : BOBA BOOST SQUARE. ดูอีเมลฉบับเต็มเพื่อรายละเอียดและภาพประกอบ.`,
       html,
       attachments: [
@@ -120,7 +121,7 @@ async function sendEmail(req, res, next) {
 
     await transporter.sendMail(mailOptions);
 
-    if(userId){
+    if (userId) {
       await allowFanZone(userId);
     }
 
@@ -139,16 +140,53 @@ async function allowFanZone(userId) {
     if (result && result.affectedRows > 0) {
       return "Not update";
     }
-    
+
     return result;
-  } catch (err) { 
+  } catch (err) {
 
     return err;
-   }
+  }
+}
+
+async function exportExcel(req, res, next) {
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet('Report');
+
+  sheet.columns = [
+    { header: '#', key: 'userId', width: 6 },
+    { header: 'First Name', key: 'firstName', width: 20 },
+    { header: 'Last Name', key: 'lastName', width: 20 },
+    { header: 'Email', key: 'email', width: 30 },
+    { header: 'Phone', key: 'phone', width: 18 },
+    { header: 'Register', key: 'registerAt', width: 15 },
+    { header: 'Fan Zone', key: 'zoneName', width: 15 },
+    { header: 'สิทธิ์ Fan Zone', key: 'isFanZone', width: 18 },
+    { header: 'Timestamp', key: 'createdAt', width: 25 }
+  ];
+
+  const users = await service.getUsers();
+
+  users.forEach(row => {
+    row.isFanZone = row.isFanZone ? "ได้รับสิทธิ์" : "ไม่ได้รับสิทธิ์"
+    sheet.addRow(row)
+  });
+
+  sheet.getRow(1).font = { bold: true };
+  sheet.getColumn(6).alignment = { horizontal: 'left' };
+  sheet.getColumn(9).alignment = { horizontal: 'left' };
+
+  res.setHeader('Content-Type',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition', 'attachment; filename="report.xlsx"');
+
+  await workbook.xlsx.write(res);
+
+  res.end();
 }
 
 module.exports = {
   getUsers,
   createUser,
-  sendEmail
+  sendEmail,
+  exportExcel
 };
