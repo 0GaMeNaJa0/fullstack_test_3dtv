@@ -56,8 +56,8 @@ const Page = () => {
     }
 
     if (filter.keyword) {
-      const kw = filter.keyword.toLowerCase();
-      const match = [u.firstName, u.lastName, u.email, u.phone].some((field) =>
+      const kw = filter.keyword.toLowerCase().replaceAll(' ', '');;
+      const match = [u.firstName + u.lastName, u.email, u.phone].some((field) =>
         field?.toLowerCase().includes(kw)
       );
       if (!match) return false;
