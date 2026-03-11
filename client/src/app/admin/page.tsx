@@ -28,11 +28,16 @@ interface Zones {
   name: string
 }
 
+export interface ModalData{
+  userId : number,
+  email : string
+}
+
 const Page = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [filter, setFilters] = useState<Filter>({});
   const [zones, setZones] = useState<Zones[]>([]);
-  const [modal, setModal] = useState<number | null>(null);
+  const [modalData, setModalData] = useState<ModalData | null>(null);
   const [isUpdate, setIsUpdate] = useState(false);
   const filteredUsers = users.filter((u) => {
     if (filter.zoneId && u.zoneName !== zones.find(z => z.zoneId === filter.zoneId)?.name) {
@@ -60,21 +65,18 @@ const Page = () => {
     return true;
   });
   const handleSendEmail = async () => {
-
-    const port = process.env.NEXT_PUBLIC_SERVER_PORT ?? '3000';
-    const url = `http://localhost:${port}/users/fanZone`;
-
     try {
-      const res = await fetch(url, {
-        method: 'PUT',
+      const res = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_SERVER_PORT}/users/sendEmail`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          "userId" : modal
+          "userId" : modalData?.userId,
+          "email" : modalData?.email
         })
       });
       console.log(res);
       if (res.ok && res.status === 200) {
-        setModal(null);
+        setModalData(null);
         setIsUpdate(!isUpdate);
       } else {
         console.error('request failed', await res.text());
@@ -270,7 +272,7 @@ const Page = () => {
                 <td className="p-2 truncate">
                   <div className="flex items-center justify-center">
                     <button
-                      onClick={() => setModal(u.userId)}
+                      onClick={() => setModalData({"userId" : u.userId, "email" : u.email})}
                       className={`${u.isFanZone ? 'bg-[#6E6E6E]' : 'bg-[#008C4F]'} text-white rounded-md px-3 py-1 inline-flex items-center justify-center`}
                     >
                       ส่งอีเมล
@@ -284,7 +286,7 @@ const Page = () => {
           </tbody>
         </table>
       </div>
-      <Modal onClose={() => setModal(null)} onSend={handleSendEmail} modalStatus={modal}/>
+      <Modal onClose={() => setModalData(null)} onSend={handleSendEmail} modalStatus={modalData}/>
     </div>
   );
 };

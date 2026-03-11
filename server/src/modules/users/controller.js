@@ -22,26 +22,12 @@ async function createUser(req, res, next) {
   }
 }
 
-async function allowFanZone(req, res, next) {
-  try {
-    const userId = req.body.userId;
-
-    const result = await service.allowFanZone(userId);
-
-    if (result && result.affectedRows > 0) {
-      return res.status(200).send("Fan Zone updated");
-    }
-    return res.status(404).send("User not found or no changes made");
-  } catch (err) { next(err); }
-}
-
-
 async function sendEmail(req, res, next) {
 
   try {
     const path = require('path');
     const email = req.body.email;
-    const isRegister = req.body.isRegister;
+    const userId = req.body.userId;
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -72,7 +58,7 @@ async function sendEmail(req, res, next) {
             <tr>
               <td style="padding:28px 32px 40px 32px;text-align:center;">
                 <h2 style="margin:0 0 12px 0;font-size:20px;line-height:1.2;color:#111;">
-                ${isRegister ? 'ท่านได้ลงทะเบียนเข้าร่วมกิจกรรม' : 'ยินดีด้วย ท่านได้รับสิทธิ์ Fan Zone !'}
+                ${!userId ? 'ท่านได้ลงทะเบียนเข้าร่วมกิจกรรม' : 'ยินดีด้วย ท่านได้รับสิทธิ์ Fan Zone !'}
                   
                 </h2>
 
@@ -82,7 +68,7 @@ async function sendEmail(req, res, next) {
                 </h1>
 
                 <p style="margin:0 0 18px 0;font-size:14px;color:#333;line-height:1.4;">
-                  ${isRegister ? 'โปรดติดตามประกาศรายชื่อผู้ที่ได้รับสิทธิ์ <strong>FAN ZONE</strong> และลำดับการยืนใน FAN ZONE ในงาน “BOBA BOOST SQUARE” ผ่านทาง' : 'โปรดติดตาม ลำดับการยืนใน FAN ZONE ในงาน “BOBA BOOST SQUARE” ผ่านทาง'}
+                  ${!userId ? 'โปรดติดตามประกาศรายชื่อผู้ที่ได้รับสิทธิ์ <strong>FAN ZONE</strong> และลำดับการยืนใน FAN ZONE ในงาน “BOBA BOOST SQUARE” ผ่านทาง' : 'โปรดติดตาม ลำดับการยืนใน FAN ZONE ในงาน “BOBA BOOST SQUARE” ผ่านทาง'}
                   
                 </p>
                 <div style="text-align:center; margin-top:10px;">
@@ -110,8 +96,8 @@ async function sendEmail(req, res, next) {
     const mailOptions = {
       from: `"no-reply@MAYBELLINENEWYORK.com" <${process.env.SMTP_USER}>`,
       to: email,
-      subject:`MAYBELLINE NEWYORK : BOBA BOOST SQUARE - ${isRegister ? 'ลงทะเบียนสำเร็จ' : 'ขอแสดงความยินดี'}`,
-      text: `${isRegister ? 'คุณได้ลงทะเบียนเข้าร่วมกิจกรรม' : 'คุณได้รับสิทธิ์ Fan Zone'} MAYBELLINE NEWYORK : BOBA BOOST SQUARE. ดูอีเมลฉบับเต็มเพื่อรายละเอียดและภาพประกอบ.`,
+      subject:`MAYBELLINE NEWYORK : BOBA BOOST SQUARE - ${!userId ? 'ลงทะเบียนสำเร็จ' : 'ขอแสดงความยินดี'}`,
+      text: `${!userId ? 'คุณได้ลงทะเบียนเข้าร่วมกิจกรรม' : 'คุณได้รับสิทธิ์ Fan Zone'} MAYBELLINE NEWYORK : BOBA BOOST SQUARE. ดูอีเมลฉบับเต็มเพื่อรายละเอียดและภาพประกอบ.`,
       html,
       attachments: [
         {
@@ -132,17 +118,37 @@ async function sendEmail(req, res, next) {
       ]
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptions);
+
+    if(userId){
+      await allowFanZone(userId);
+    }
 
     return res.status(200).send("Email sent successfully");
   } catch (err) {
     next(err);
   }
-
 }
+
+
+async function allowFanZone(userId) {
+  try {
+
+    const result = await service.allowFanZone(userId);
+
+    if (result && result.affectedRows > 0) {
+      return "Not update";
+    }
+    
+    return result;
+  } catch (err) { 
+
+    return err;
+   }
+}
+
 module.exports = {
   getUsers,
   createUser,
-  allowFanZone,
   sendEmail
 };

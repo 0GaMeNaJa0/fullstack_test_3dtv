@@ -13,7 +13,7 @@ interface FormData {
   zoneId: number;
   isFanZone: boolean;
   createdAt: string;
-  isAccepted: boolean; 
+  isAccepted: boolean;
 }
 
 const Page = () => {
@@ -23,8 +23,8 @@ const Page = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       zoneId: Number(params?.id ?? 0),
-      registerAt: new Date().toLocaleString("sv-SE", {timeZone: "Asia/Bangkok",}).replace("T", " "),
-      createdAt: new Date().toLocaleString("sv-SE", {timeZone: "Asia/Bangkok",}).replace("T", " "),
+      registerAt: new Date().toLocaleString("sv-SE", { timeZone: "Asia/Bangkok", }).replace("T", " "),
+      createdAt: new Date().toLocaleString("sv-SE", { timeZone: "Asia/Bangkok", }).replace("T", " "),
       isFanZone: false,
       isAccepted: false
     }
@@ -33,18 +33,30 @@ const Page = () => {
   const onSubmit = async (data: FormData) => {
     const payload: FormData = { ...data };
 
-    const port = process.env.NEXT_PUBLIC_SERVER_PORT ?? '3000';
-    const url = `http://localhost:${port}/users`;
 
     try {
-      const res = await fetch(url, {
+      const res = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_SERVER_PORT}/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
       if (res.ok && res.status === 201) {
-        router.push('/finish');
+        try {
+          const res = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_SERVER_PORT}/users/sendEmail`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              "email": payload.email
+            })
+          });
+          if (res.ok && res.status === 200) {
+            router.push('/finish');
+          }
+        } catch (err) {
+          console.error('network or other error', err);
+        }
+
       } else {
         console.error('request failed', await res.text());
       }

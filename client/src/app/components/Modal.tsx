@@ -1,9 +1,10 @@
 import React from 'react'
+import { ModalData } from '../admin/page'
 
 interface ModalProp{
   onSend : () => void,
   onClose : () => void,
-  modalStatus : number | null
+  modalStatus : ModalData | null
 }
 
 const Modal = ({onSend,onClose,modalStatus} : ModalProp) => {

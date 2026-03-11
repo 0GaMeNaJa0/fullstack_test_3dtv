@@ -4,7 +4,6 @@ const router = express.Router();
 
 router.get('/', ctrl.getUsers);
 router.post('/', ctrl.createUser);
-router.put('/fanZone', ctrl.allowFanZone);
 router.post('/sendEmail',ctrl.sendEmail)
 
 module.exports = router;
