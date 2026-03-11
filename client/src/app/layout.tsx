@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dbHeavent.className} ${giorgio.variable}`}>
       <body
-        className={`antialiased flex justify-center`}
+        className={`antialiased w-full`}
       >
         {children}   
       </body>
