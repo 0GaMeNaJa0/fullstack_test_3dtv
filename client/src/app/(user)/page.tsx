@@ -23,10 +23,10 @@ export default function Home() {
       <Image
         src="/images/p1/bg_02_vertical_glass.png"
         alt="bg_02_vertical_glass"
-        width={440}
-        height={700}
+        width={400}
+        height={600}
         priority={false}
-        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-110 "
+        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-90 "
       />
       <Button onClick={handlePrivacy} text={"REGISTER"}/>
     </div>

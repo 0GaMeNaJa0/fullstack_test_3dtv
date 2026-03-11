@@ -23,15 +23,15 @@ const page = () => {
                     <Image src="/images/p3/lip_close_right.png" alt="full_logo" width={173} height={173} />
                 </div>
             </div>
-            <div className='grid grid-cols-2 justify-items-center gap-y-2'>
+            <div className='grid grid-cols-2 justify-items-center gap-y-2 '>
                 <Image src="/images/p3/winny_satang.png" alt="winny_satang"
-                    width={0} height={0} sizes="100vw" className='w-auto h-[231px]'
+                    width={0} height={0} sizes="100vw" className='w-auto h-[200px]'
                     onClick={() => redirectSelected("1")} />
                 <Image src="/images/p3/almond_progress.png" alt="almond_progress"
-                    width={0} height={0} sizes="100vw" className='w-auto h-[231px]'
+                    width={0} height={0} sizes="100vw" className='w-auto h-[200px]'
                     onClick={() => redirectSelected("2")} />
                 <Image src="/images/p3/daou.png" alt="daou"
-                    width={0} height={0} sizes="100vw" className='w-auto h-[231px] z-50 col-span-2'
+                    width={0} height={0} sizes="100vw" className='w-auto h-[200px] z-50 col-span-2'
                     onClick={() => redirectSelected("3")} />
             </div>
         </div>
