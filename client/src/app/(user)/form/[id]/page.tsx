@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Button from '@/app/components/Button'
+import { useState } from "react";
+import Loading from "@/app/components/Loading";
 
 interface FormData {
   firstName: string;
@@ -19,6 +21,7 @@ interface FormData {
 const Page = () => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     defaultValues: {
@@ -35,6 +38,7 @@ const Page = () => {
 
 
     try {
+      setIsLoading(true);
       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -51,6 +55,7 @@ const Page = () => {
             })
           });
           if (res.ok && res.status === 200) {
+            setIsLoading(false);
             router.push('/finish');
           }
         } catch (err) {
@@ -66,7 +71,9 @@ const Page = () => {
   };
 
   return (
+
     <div className="relative flex grow items-center flex-col space-y-6 text-lg/4 max-xs:text-base/4">
+      <Loading isLoading={isLoading} />
       <Image src="/images/regis_logo.png" alt="regis_logo" width={211} height={31} />
       <form className='w-full space-y-3 px-4' onSubmit={handleSubmit(onSubmit)}>
         <div>

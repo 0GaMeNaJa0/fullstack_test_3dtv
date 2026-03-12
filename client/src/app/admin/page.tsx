@@ -3,6 +3,7 @@ import { ThaiDatePicker } from "thaidatepicker-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Modal from "../components/Modal";
+import Loading from "../components/Loading";
 
 interface User {
   userId: number;
@@ -39,6 +40,7 @@ const Page = () => {
   const [zones, setZones] = useState<Zones[]>([]);
   const [modalData, setModalData] = useState<ModalData | null>(null);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const filteredUsers = users.filter((u) => {
     if (filter.zoneId && u.zoneName !== zones.find(z => z.zoneId === filter.zoneId)?.name) {
@@ -68,17 +70,22 @@ const Page = () => {
 
   const fanZoneUsers = filteredUsers.filter(u => u.isFanZone === true).length;
   const handleSendEmail = async () => {
+    const userId = modalData?.userId;
+    const email = modalData?.email;
+    setIsLoading(true);
+    setModalData(null);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/sendEmail`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          "userId": modalData?.userId,
-          "email": modalData?.email
+          "userId": userId,
+          "email": email
         })
       });
       console.log(res);
       if (res.ok && res.status === 200) {
+        setIsLoading(false);
         setModalData(null);
         setIsUpdate(!isUpdate);
       } else {
@@ -177,6 +184,7 @@ const Page = () => {
 
   return (
     <div className="space-y-5 bg-[#F9F3F3] text-lg min-h-screen">
+      <Loading isLoading={isLoading}/>
       <div className="w-full bg-[#DF5761] flex justify-between items-center font-semibold text-white px-6">
         <p className=" text-4xl">ผู้ลงทะเบียน</p>
         <div className="flex justify-center items-center gap-x-2">
