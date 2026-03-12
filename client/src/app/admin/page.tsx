@@ -83,7 +83,6 @@ const Page = () => {
           "email": email
         })
       });
-      console.log(res);
       if (res.ok && res.status === 200) {
         setIsLoading(false);
         setModalData(null);
